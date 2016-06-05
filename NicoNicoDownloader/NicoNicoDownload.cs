@@ -74,7 +74,7 @@ namespace NicoNicoDownloader
                     await sr.WriteAsync(data, 0, count);
                 } while (count != 0);
             }
-            Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", nico_id, temp_file_name));
+            Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", temp_file_name, temp_file_name));
 
             var thumbManager = new ThumbManager(cookieContainer, session.Session);
             var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
@@ -82,7 +82,7 @@ namespace NicoNicoDownloader
             System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
             info.FileName = "ffmpeg.exe";
             info.UseShellExecute = false;
-            info.Arguments = string.Format("-i {0} -vn -acodec copy {1}", temp_file_name, new_file_name);
+            info.Arguments = string.Format("-i {0} -vn -acodec copy \"{1}\"", temp_file_name, new_file_name);
             info.WorkingDirectory = Environment.CurrentDirectory;
             info.CreateNoWindow = true;
             var p = System.Diagnostics.Process.Start(info);
