@@ -62,7 +62,7 @@ namespace NicoNicoDownloader
         {
             var videoManager = new VideoManager(cookieContainer, session.Session);
             var video = await videoManager.GetVideoFlvAsync(nico_id);
-            string temp_file_name = string.Format(tempDirectory + "{0}.{1}", tempFileName, this.GetCodecExt(video.Url));
+            string temp_file_name = string.Format(tempDirectory + "{0}.{1}", nico_id, this.GetCodecExt(video.Url));
             using (var stream = await this.GetVideoAsync(video,nico_id))
             using (var sr = new FileStream(temp_file_name, System.IO.FileMode.Create))
             {
