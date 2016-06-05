@@ -81,9 +81,12 @@ namespace NicoNicoDownloader
             string new_file_name = string.Format(tempDirectory + "{0}.m4a", this.TitleConverter.ConvertTitle(this.ConvertFileName(thumb.Title.Trim())));
             System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
             info.FileName = "ffmpeg.exe";
+            info.UseShellExecute = false;
             info.Arguments = string.Format("-i {0} -vn -acodec copy {1}", temp_file_name, new_file_name);
+            info.WorkingDirectory = Environment.CurrentDirectory;
             info.CreateNoWindow = true;
-            System.Diagnostics.Process.Start(info);
+            var p = System.Diagnostics.Process.Start(info);
+            p.WaitForExit();
 
             Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", temp_file_name, new_file_name));
         }
