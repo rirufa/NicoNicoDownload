@@ -40,30 +40,13 @@ namespace NicoNicoDownloader
             Logger.Current.WriteLine("login success");
         }
 
-        public async Task<Stream> GetVideoAsync(NicoNico.Net.Entities.Video.VideoFlv video, string nico_id)
-        {
-            string nicohistory = "";
-            using (var handler = new HttpClientHandler() { CookieContainer = cookieContainer })
-            using (var client = new HttpClient(handler))
-            {
-                Uri video_uri = new Uri(string.Format("http://www.nicovideo.jp/watch/{0}", nico_id));
-                await client.GetAsync(video_uri);
-                nicohistory = handler.CookieContainer.GetCookies(video_uri)["nicohistory"].Value;
-            }
-
-            cookieContainer.Add(new System.Net.Cookie("nicohistory", nicohistory, "/", "nicovideo.jp"));
-            var reqLog = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(video.Url);
-            reqLog.CookieContainer = cookieContainer;
-            var resLog = reqLog.GetResponse();
-            return resLog.GetResponseStream();
-        }
 
         public async Task GetMusicFile(string nico_id)
         {
             var videoManager = new VideoManager(cookieContainer, session.Session);
             var video = await videoManager.GetVideoFlvAsync(nico_id);
             string temp_file_name = string.Format(tempDirectory + "{0}.{1}", nico_id, this.GetCodecExt(video.Url));
-            using (var stream = await this.GetVideoAsync(video,nico_id))
+            using (var stream = await video.GetVideoAsync(nico_id, cookieContainer))
             using (var sr = new FileStream(temp_file_name, System.IO.FileMode.Create))
             {
                 var count = 0;
@@ -79,14 +62,7 @@ namespace NicoNicoDownloader
             var thumbManager = new ThumbManager(cookieContainer, session.Session);
             var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
             string new_file_name = string.Format(tempDirectory + "{0}.m4a", this.TitleConverter.ConvertTitle(this.ConvertFileName(thumb.Title.Trim())));
-            System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
-            info.FileName = "ffmpeg.exe";
-            info.UseShellExecute = false;
-            info.Arguments = string.Format("-i {0} -vn -acodec copy \"{1}\"", temp_file_name, new_file_name);
-            info.WorkingDirectory = Environment.CurrentDirectory;
-            info.CreateNoWindow = true;
-            var p = System.Diagnostics.Process.Start(info);
-            p.WaitForExit();
+            this.GetAudioFile(temp_file_name, new_file_name);
 
             Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", temp_file_name, new_file_name));
         }
@@ -95,6 +71,18 @@ namespace NicoNicoDownloader
         {
             get;
             set;
+        }
+
+        private void GetAudioFile(string temp_file_name,string new_file_name)
+        {
+            System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
+            info.FileName = "ffmpeg.exe";
+            info.UseShellExecute = false;
+            info.Arguments = string.Format("-i {0} -vn -acodec copy \"{1}\"", temp_file_name, new_file_name);
+            info.WorkingDirectory = Environment.CurrentDirectory;
+            info.CreateNoWindow = true;
+            var p = System.Diagnostics.Process.Start(info);
+            p.WaitForExit();
         }
 
         private string ConvertFileName(string name)
