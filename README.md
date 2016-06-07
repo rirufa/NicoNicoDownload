@@ -22,3 +22,6 @@
 
 # コマンドラインパラメーター
 NicoNicoDownloader [ID] [PASSWORD]
+
+#権利
+NicoNico.NetとNicoNico.Net.ConsoleTestの権利はdrasticactionsに帰属します
