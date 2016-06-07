@@ -36,6 +36,8 @@ namespace NicoNico.Net.Entities.Search
         ViewCounter,
         [LabeledEnum("mylistCounter")]
         MylistCounter,
+        [LabeledEnum("startTime")]
+        StartTime,
         [LabeledEnum("commentCounter")]
         CommentCounter,
         [LabeledEnum("liveStatus")]
@@ -95,7 +97,7 @@ namespace NicoNico.Net.Entities.Search
         [JsonProperty("commentCounter")]
         public string CommentCounter;
         [JsonProperty("startTime")]
-        public string StartTime;
+        public DateTime StartTime;
         [JsonProperty("communityIcon")]
         public string CommunityIcon;
         [JsonProperty("liveStatus")]
@@ -125,6 +127,7 @@ namespace NicoNico.Net.Entities.Search
 
         public SearchBuilder RangeFrom(NicoNicoFilter field,object value)
         {
+
             return new SearchBuilder(this, string.Format("filters[{0}][gte]={1}", field.GetLabel(), value));
         }
 
