@@ -83,6 +83,8 @@ namespace NicoNico.Net.Tools
 
         public const string SearchSuggestion = "http://search.nicovideo.jp/suggestion/complete/";
 
+        public const string Search = "http://api.search.nicovideo.jp/api/v2/{0}/contents/search?q={1}&targets={2}&_sort={3}&fields={4}&_context=niconiconet";
+
         public const string Message = "http://msg.nicovideo.jp/{2}/api.json/thread?version=20090904&thread={0}&res_from={1}";
     }
 }

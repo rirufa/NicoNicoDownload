@@ -45,6 +45,7 @@
     <Compile Include="Entities\Message\NumClick.cs" />
     <Compile Include="Entities\Message\Thread.cs" />
     <Compile Include="Entities\Message\ViewCounter.cs" />
+    <Compile Include="Entities\Search\Search.cs" />
     <Compile Include="Entities\Search\Suggestion.cs" />
     <Compile Include="Entities\User\User.cs" />
     <Compile Include="Entities\User\UserLoginSession.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Tools\Constants.cs" />
     <Compile Include="Tools\EndPoints.cs" />
     <Compile Include="Tools\HttpUtility.cs" />
+    <Compile Include="Tools\LabeledEnumAttribute.cs" />
     <Compile Include="Tools\ParseHelpers.cs" />
   </ItemGroup>
   <ItemGroup>

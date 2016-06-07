@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using NicoNico.Net.Managers;
+using NicoNico.Net.Entities.Search;
 
 namespace NicoNico.Net.ConsoleTest
 {
@@ -60,49 +61,25 @@ namespace NicoNico.Net.ConsoleTest
             //var test3 = await genreManager.GetGenreListAsync();
             //var test4 = await genreManager.GetGenreGroupsAsync();
 
-            //var searchManager = new SearchManager(cookieContainer, session.Session);
+            var searchManager = new SearchManager(cookieContainer, session.Session);
             //var test13 = await searchManager.GetSuggestions("実況");
+            var test14 = await searchManager.Search(SearchBuilder.Build(SearchType.Video ,"東方ヴォーカル", NicoNicoTarget.Keyword, NicoNicoSort.StartTime, true).Offset(0).Limit(10));
 
             //var liveVideoManager = new LiveVideoManager(cookieContainer, session.Session);
             //var test10 = await liveVideoManager.GetComingSoonListAsync();
             //var test11 = await liveVideoManager.GetOnAirListAsync();
 
-            var videoManager = new VideoManager(cookieContainer, session.Session);
+            //var videoManager = new VideoManager(cookieContainer, session.Session);
             //var test5 = await videoManager.GetDefListAsync(0, 10);
             //var test2 = await videoManager.GetVideoInfoAsync(new string[] { "sm26238346", "sm9" });
-            var test8 = await videoManager.GetVideoFlvAsync("sm28943856");
+            //var test8 = await videoManager.GetVideoFlvAsync("sm28943856");
             //var test6 = await videoManager.GetVideoInfoAsync("sm26238346");
             //var thumbManager = new ThumbManager(cookieContainer, session.Session);
             //var test7 = await thumbManager.GetThumbInfoAsync("sm26156154");
 
-            string nicohistory = "";
-            using (var handler = new HttpClientHandler() { CookieContainer = cookieContainer })
-            using (var client = new HttpClient(handler))
-            {
-                Uri video_uri = new Uri(string.Format("http://www.nicovideo.jp/watch/{0}", test8.Id));
-                await client.GetAsync(video_uri);
-                nicohistory = handler.CookieContainer.GetCookies(video_uri)["nicohistory"].Value;
-            }
-
             //var download_container = new System.Net.CookieContainer();
             //download_container.Add(new System.Net.Cookie("user_session", userLoginSession.SessionKey, "/", "nicovideo.jp"));
             //download_container.Add(new System.Net.Cookie("nicohistory", nicohistory, "/", "nicovideo.jp"));
-            cookieContainer.Add(new System.Net.Cookie("nicohistory", nicohistory, "/", "nicovideo.jp"));
-            var reqLog = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(test8.Url);
-            reqLog.CookieContainer = cookieContainer; // CookieContainerセット
-            var resLog = reqLog.GetResponse();
-            using (var stream = resLog.GetResponseStream())
-            using (var sr = new System.IO.FileStream(test8.Id.ToString(), System.IO.FileMode.Create))
-            {
-                var count = 0;
-                do
-                {
-                    byte[] data = new byte[1024 * 1024];
-                    count = stream.Read(data, 0, data.Length);
-                    sr.Write(data, 0, count);
-                } while (count != 0);
-            }
-            Console.WriteLine("download complete");
 
             var userManager = new UserManager(cookieContainer, session.Session);
             var user = await userManager.GetCurrentUserInfoAsync();

@@ -38,5 +38,18 @@ namespace NicoNico.Net.Managers
                 throw new Exception("Failed to get suggestions" + result.ResultXml, ex);
             }
         }
+
+        public async Task<SearchEntitiy> Search(SearchBuilder builder)
+        {
+            var result = await _webManager.GetData(new Uri(builder.Query));
+            try
+            {
+                return JsonConvert.DeserializeObject<SearchEntitiy>(result.ResultXml);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to get suggestions" + result.ResultXml, ex);
+            }
+        }
     }
 }
