@@ -44,6 +44,18 @@ namespace NicoNico.Net.Entities.Search
         LiveStatus,
     }
 
+    public enum NicoNicoFilterOperator
+    {
+        [LabeledEnum("gt")]
+        Gt,
+        [LabeledEnum("lt")]
+        Lt,
+        [LabeledEnum("gte")]
+        Gte,
+        [LabeledEnum("lte")]
+        Lte,
+    }
+
     public enum NicoNicoTarget
     {
         [LabeledEnum("title,description,tags")]
@@ -125,20 +137,13 @@ namespace NicoNico.Net.Entities.Search
                 this.Query = query;
         }
 
-        public SearchBuilder RangeFrom(NicoNicoFilter field,object value)
+        public SearchBuilder Range(NicoNicoFilter field, NicoNicoFilterOperator ope, object value)
         {
-
-            return new SearchBuilder(this, string.Format("filters[{0}][gte]={1}", field.GetLabel(), value));
-        }
-
-        public SearchBuilder RangeTo(NicoNicoFilter field, object value)
-        {
-            return new SearchBuilder(this, string.Format("filters[{0}][lt]={1}", field.GetLabel(), value));
-        }
-
-        public SearchBuilder RangeEqual(NicoNicoFilter field, object value)
-        {
-            return new SearchBuilder(this, string.Format("filters[{0}][0]={1}", field.GetLabel(), value));
+            DateTime? isodate = value as DateTime?;
+            if (isodate != null)
+                return new SearchBuilder(this, string.Format("filters[{0}][{1}]={2}", field.GetLabel(), ope.GetLabel() , isodate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'")));
+            else
+                return new SearchBuilder(this, string.Format("filters[{0}][{1}]={2}", field.GetLabel(), ope.GetLabel() , value));
         }
 
         public SearchBuilder Offset(int o)
