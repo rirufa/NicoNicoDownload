@@ -52,7 +52,7 @@ namespace NicoNicoScraper
             {
                 email = args[0];
                 pass = args[1];
-                query = args[3];
+                query = args[2];
             }
 
             Scraper scraper = new Scraper();
