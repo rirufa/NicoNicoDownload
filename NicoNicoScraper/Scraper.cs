@@ -46,14 +46,15 @@ namespace NicoNicoScraper
 
         public IEnumerable<Search> Scrape(string query)
         {
+            const int max_records = 100;
             SearchManager search_manager = new SearchManager(cookieContainer, session.Session);
             for(int i = 0; i < 16; i++)
             {
                 var search_task = search_manager.Search(
                     SearchBuilder.Build(
                         SearchType.Video, query, NicoNicoTarget.Keyword, NicoNicoSort.StartTime, false)
-                        .Offset(0)
-                        .Limit(100)
+                        .Offset(i)
+                        .Limit(max_records)
                         .Range(NicoNicoFilter.StartTime,NicoNicoFilterOperator.Gte,this.lastDateTime)
                     );
                 var search_result = search_task.Result;
