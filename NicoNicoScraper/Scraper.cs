@@ -52,7 +52,7 @@ namespace NicoNicoScraper
             {
                 var search_task = search_manager.Search(
                     SearchBuilder.Build(
-                        SearchType.Video, query, NicoNicoTarget.Keyword, NicoNicoSort.StartTime, false)
+                        SearchType.Video, query, NicoNicoTarget.Tag, NicoNicoSort.StartTime, false)
                         .Offset(i)
                         .Limit(max_records)
                         .Range(NicoNicoFilter.StartTime,NicoNicoFilterOperator.Gte,this.lastDateTime)
