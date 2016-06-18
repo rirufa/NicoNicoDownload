@@ -63,8 +63,14 @@ namespace NicoNicoDownloader
                 {
                     string id = sr.ReadLine();
                     Console.WriteLine(string.Format("{0}...",id));
-                    await nico.GetMusicFile(id);
-                    Console.WriteLine("complete");
+                    try
+                    {
+                        await nico.GetMusicFile(id);
+                        Console.WriteLine("complete");
+                    }catch(Exception ex)
+                    {
+                        Console.WriteLine(string.Format("failed.please see log.message is {0}",ex.Message));
+                    }
                 }
             }
 

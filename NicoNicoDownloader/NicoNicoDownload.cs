@@ -43,28 +43,37 @@ namespace NicoNicoDownloader
 
         public async Task GetMusicFile(string nico_id)
         {
-            var videoManager = new VideoManager(cookieContainer, session.Session);
-            var video = await videoManager.GetVideoFlvAsync(nico_id);
-            string temp_file_name = string.Format(tempDirectory + "{0}.{1}", nico_id, this.GetCodecExt(video.Url));
-            using (var stream = await video.GetVideoAsync(nico_id, cookieContainer))
-            using (var sr = new FileStream(temp_file_name, System.IO.FileMode.Create))
+            try
             {
-                var count = 0;
-                do
+                var videoManager = new VideoManager(cookieContainer, session.Session);
+                var video = await videoManager.GetVideoFlvAsync(nico_id);
+                string temp_file_name = string.Format(tempDirectory + "{0}.{1}", nico_id, this.GetCodecExt(video.Url));
+                using (var stream = await video.GetVideoAsync(nico_id, cookieContainer))
+                using (var sr = new FileStream(temp_file_name, System.IO.FileMode.Create))
                 {
-                    byte[] data = new byte[1024 * 1024];
-                    count = await stream.ReadAsync(data, 0, data.Length);
-                    await sr.WriteAsync(data, 0, count);
-                } while (count != 0);
+                    var count = 0;
+                    do
+                    {
+                        byte[] data = new byte[1024 * 1024];
+                        count = await stream.ReadAsync(data, 0, data.Length);
+                        await sr.WriteAsync(data, 0, count);
+                    } while (count != 0);
+                }
+                Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", temp_file_name, temp_file_name));
+
+                var thumbManager = new ThumbManager(cookieContainer, session.Session);
+                var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
+                string new_file_name = string.Format(tempDirectory + "{0}.m4a", this.TitleConverter.ConvertTitle(this.ConvertFileName(thumb.Title.Trim())));
+                this.GetAudioFile(temp_file_name, new_file_name);
+
+                Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", temp_file_name, new_file_name));
             }
-            Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", temp_file_name, temp_file_name));
-
-            var thumbManager = new ThumbManager(cookieContainer, session.Session);
-            var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
-            string new_file_name = string.Format(tempDirectory + "{0}.m4a", this.TitleConverter.ConvertTitle(this.ConvertFileName(thumb.Title.Trim())));
-            this.GetAudioFile(temp_file_name, new_file_name);
-
-            Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", temp_file_name, new_file_name));
+            catch (Exception ex)
+            {
+                Logger.Current.WriteLine(string.Format("failed get audio track from {0}", nico_id));
+                Logger.Current.WriteLine(ex.ToString());
+                throw ex;
+            }
         }
 
         public TitileConverterInfo TitleConverter
