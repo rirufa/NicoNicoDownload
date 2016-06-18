@@ -55,6 +55,8 @@ namespace NicoNicoDownloader
             nico.TitleConverter = TitileConverterInfo.Build("format.txt");
             await nico.Login(email, pass);
 
+            PowerManagement.PreventSleep();
+
             using (StreamReader sr = new StreamReader("list.txt"))
             {
                 while(!sr.EndOfStream)
@@ -65,6 +67,9 @@ namespace NicoNicoDownloader
                     Console.WriteLine("complete");
                 }
             }
+
+            PowerManagement.AllowMonitorPowerdown();
+
             Console.WriteLine("all task complete!");
         }
     }

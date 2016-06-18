@@ -61,7 +61,6 @@ namespace NicoNicoScraper
             {
                 Console.WriteLine(string.Format("{0}:{1},{2}",search.ContentId,search.Title,search.StartTime));
             }
-            Console.ReadKey();
         }
     }
 }
