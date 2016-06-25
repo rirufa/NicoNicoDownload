@@ -57,20 +57,47 @@ namespace NicoNicoDownloader
 
             PowerManagement.PreventSleep();
 
+            const string commnent_symbol = "#";
+
+            //key = niconico video id
+            //value = if download, value is true. 
+            Dictionary<string, bool> state_list = new Dictionary<string, bool>();
+
             using (StreamReader sr = new StreamReader("list.txt"))
             {
-                while(!sr.EndOfStream)
+                while (!sr.EndOfStream)
                 {
                     string id = sr.ReadLine();
-                    Console.WriteLine(string.Format("{0}...",id));
-                    try
-                    {
-                        await nico.GetMusicFile(id);
-                        Console.WriteLine("complete");
-                    }catch(Exception ex)
-                    {
-                        Console.WriteLine(string.Format("failed.please see log.message is {0}",ex.Message));
-                    }
+                    if (id.IndexOf(commnent_symbol) != 0)    //id does not have comment symbol
+                        state_list.Add(id, false);
+                    else
+                        Console.WriteLine(string.Format("{0} is skipped", id.Trim(commnent_symbol.ToCharArray())));
+                }
+            }
+
+            foreach(string id in state_list.Keys.ToList())
+            {
+                Console.WriteLine(string.Format("{0}...", id));
+                try
+                {
+                    await nico.GetMusicFile(id);
+                    Console.WriteLine("complete");
+                    state_list[id] = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(string.Format("failed.please see log.message is {0}", ex.Message));
+                }
+            }
+
+            using (StreamWriter sw = new StreamWriter("list.txt"))
+            {
+                foreach(KeyValuePair<string,bool> state in state_list)
+                {
+                    if (state.Value)
+                        sw.WriteLine(commnent_symbol + state.Key);
+                    else
+                        sw.WriteLine(state.Key);
                 }
             }
 
