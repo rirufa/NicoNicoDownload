@@ -6,7 +6,7 @@ using System.Net.Http;
 using NicoNico.Net.Managers;
 using System.IO;
 
-namespace NicoNicoDownloader
+namespace NicoNicoDownloader.Model
 {
     class NicoNicoDownload
     {

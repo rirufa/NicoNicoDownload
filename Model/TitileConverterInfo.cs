@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NicoNicoDownloader
+namespace NicoNicoDownloader.Model
 {
     public class TitileConverterInfo
     {

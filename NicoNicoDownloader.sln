@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NicoNicoDownloader", "NicoNicoDownloader\NicoNicoDownloader.csproj", "{9F777665-F2F0-481B-AC7B-406AD1824DD3}"
 EndProject
@@ -13,7 +13,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NicoNicoScraper", "NicoNicoScraper\NicoNicoScraper.csproj", "{DBBFEE5F-8F94-43C2-9BB0-DF8EF2EC9E77}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Model", "Model\Model.shproj", "{AB35BDFF-9701-4840-8AA0-791EEFE767B5}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Model\Model.projitems*{dbbfee5f-8f94-43c2-9bb0-df8ef2ec9e77}*SharedItemsImports = 4
+		Model\Model.projitems*{9f777665-f2f0-481b-ac7b-406ad1824dd3}*SharedItemsImports = 4
+		Model\Model.projitems*{ab35bdff-9701-4840-8aa0-791eefe767b5}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NicoNico.Net.Entities.Search;
 using NicoNico.Net.Managers;
 
-namespace NicoNicoScraper
+namespace NicoNicoDownloader.Model
 {
     class Scraper
     {

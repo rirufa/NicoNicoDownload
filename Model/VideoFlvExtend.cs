@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.IO;
 using NicoNico.Net.Entities.Video;
 
-namespace NicoNicoDownloader
+namespace NicoNicoDownloader.Model
 {
     static class VideoFlvExtend
     {

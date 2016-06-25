@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using NicoNicoDownloader.Model;
 
 namespace NicoNicoDownloader
 {
@@ -23,26 +24,7 @@ namespace NicoNicoDownloader
                 Console.WriteLine("Enter Email: ");
                 email = Console.ReadLine();
                 Console.WriteLine("Enter Password: ");
-
-                // Mask Password
-                pass = "";
-                ConsoleKeyInfo key;
-                do
-                {
-                    key = Console.ReadKey(true);
-                    if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
-                    {
-                        pass += key.KeyChar;
-                        Console.Write("*");
-                    }
-                    else
-                    {
-                        if (key.Key != ConsoleKey.Backspace || pass.Length <= 0) continue;
-                        pass = pass.Substring(0, (pass.Length - 1));
-                        Console.Write("\b \b");
-                    }
-                }
-                while (key.Key != ConsoleKey.Enter);
+                pass = ConsoleHelper.ReadLineWithMask();
                 Console.WriteLine();
             }
             else
