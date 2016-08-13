@@ -10,7 +10,7 @@ namespace NicoNico.Net.Tools
     /// <summary>
     /// 列挙型のフィールドにラベル文字列を付加するカスタム属性です。
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
     public class LabeledEnumAttribute : Attribute
     {
         /// <summary>
@@ -37,6 +37,11 @@ namespace NicoNico.Net.Tools
         /// <returns>ラベル文字列</returns>
         public static string GetLabel(this Enum value)
         {
+            return GetLabel(value, 0);
+        }
+
+        public static string GetLabel(this Enum value,int index)
+        {
             //EnumのTypeを取得する
             //  type = {Name = "フォーマット形式共通" FullName = "共通.フォーマット形式共通"}
             var type = value.GetType();
@@ -51,7 +56,7 @@ namespace NicoNico.Net.Tools
                         (LabeledEnumAttribute[])type.GetRuntimeField(name)
                         .GetCustomAttributes(typeof(LabeledEnumAttribute), false);
 
-            return myClass[0].label;
+            return myClass[index].label;
         }
     }
 }

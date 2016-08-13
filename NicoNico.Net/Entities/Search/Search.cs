@@ -63,24 +63,33 @@ namespace NicoNico.Net.Entities.Search
         [LabeledEnum("tagsExact")]
         Tag,
     }
-
+    
     public enum SearchType
     {
+        //内部的にこの順番に依存しているので属性の順番を変えないこと
         [LabeledEnum("video")]
+        [LabeledEnum("contentId,title,description,tags,categoryTags,viewCounter,mylistCounter,commentCounter,startTime")]
         Video,
         [LabeledEnum("live")]
+        [LabeledEnum("contentId,title,description,tags,categoryTags,viewCounter,mylistCounter,commentCounter,startTime,scoreTimeshiftReserved,liveStatus")]
         Live,
         [LabeledEnum("illust")]
+        [LabeledEnum("contentId,title,description,tags,categoryTags,viewCounter,mylistCounter,commentCounter,startTime")]
         Illust,
         [LabeledEnum("manga")]
+        [LabeledEnum("contentId,title,description,tags,categoryTags,viewCounter,mylistCounter,commentCounter,startTime")]
         Manga,
         [LabeledEnum("book")]
+        [LabeledEnum("contentId,title,description,tags,viewCounter,mylistCounter,commentCounter,startTime")]
         Book,
         [LabeledEnum("channel")]
+        [LabeledEnum("contentId,title,description,tags,startTime")]
         Channel,
         [LabeledEnum("channelarticle")]
+        [LabeledEnum("contentId,title,description,tags,mylistCounter,commentCounter,startTime")]
         ChannelArticle,
         [LabeledEnum("news")]
+        [LabeledEnum("contentId,title,description,tags,commentCounter,startTime")]
         News,
     }
 
@@ -158,13 +167,8 @@ namespace NicoNico.Net.Entities.Search
 
         public static SearchBuilder Build(SearchType type,string query,NicoNicoTarget target,NicoNicoSort sort_field,bool order)
         {
-            string field = "";
-            if (type == SearchType.Live)
-                field = "contentId,title,description,tags,categoryTags,viewCounter,mylistCounter,commentCounter,startTime,scoreTimeshiftReserved,liveStatus";
-            else
-                field = "contentId,title,description,tags,categoryTags,viewCounter,mylistCounter,commentCounter,startTime";
             string sort_param = (order ? "%2b" : "-") + sort_field.GetLabel();  //+はエンコードしないとエラーになる
-            return new SearchBuilder(string.Format(EndPoints.Search, type.GetLabel() , query, target.GetLabel(), sort_param, field));
+            return new SearchBuilder(string.Format(EndPoints.Search, type.GetLabel() , query, target.GetLabel(), sort_param, type.GetLabel(1)));
         }
     }
 }
