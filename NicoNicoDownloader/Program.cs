@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using NicoNicoDownloader.Model;
@@ -10,6 +11,7 @@ namespace NicoNicoDownloader
 {
     class Program
     {
+        static CancellationTokenSource cancelToken = new CancellationTokenSource();
         static void Main(string[] args)
         {
             Task t = MainAsync(args);
@@ -17,6 +19,13 @@ namespace NicoNicoDownloader
         }
         static async Task MainAsync(string[] args)
         {
+            Console.CancelKeyPress += (s, e) =>
+            {
+                cancelToken.Cancel();
+                e.Cancel = true;
+                Console.WriteLine("abort soon...");
+            };
+
             var email = "";
             var pass = "";
             if(args.Length != 2)
@@ -62,8 +71,11 @@ namespace NicoNicoDownloader
                 Console.WriteLine(string.Format("{0}...", id));
                 try
                 {
-                    await nico.GetMusicFile(id);
-                    Console.WriteLine("complete");
+                    await nico.GetMusicFile(id,cancelToken);
+                    if (cancelToken.IsCancellationRequested)
+                        break;
+                    else
+                        Console.WriteLine("complete");
                     state_list[id] = true;
                 }
                 catch (Exception ex)
@@ -85,7 +97,10 @@ namespace NicoNicoDownloader
 
             PowerManagement.AllowMonitorPowerdown();
 
-            Console.WriteLine("all task complete!");
+            if (!cancelToken.IsCancellationRequested)
+                Console.WriteLine("all task complete!");
+            else
+                Console.WriteLine("aborted!");
         }
     }
 }

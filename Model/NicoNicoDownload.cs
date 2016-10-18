@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
 using NicoNico.Net.Managers;
@@ -41,7 +42,7 @@ namespace NicoNicoDownloader.Model
         }
 
 
-        public async Task GetMusicFile(string nico_id)
+        public async Task GetMusicFile(string nico_id, CancellationTokenSource token = null)
         {
             try
             {
@@ -57,6 +58,11 @@ namespace NicoNicoDownloader.Model
                         byte[] data = new byte[1024 * 1024];
                         count = await stream.ReadAsync(data, 0, data.Length);
                         await sr.WriteAsync(data, 0, count);
+                        if (token != null && token.IsCancellationRequested)
+                        {
+                            Logger.Current.WriteLine(string.Format("canceled get audio track from {0}", nico_id));
+                            return;
+                        }
                     } while (count != 0);
                 }
                 Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", temp_file_name, temp_file_name));
