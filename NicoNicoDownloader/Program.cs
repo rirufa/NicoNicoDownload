@@ -59,7 +59,7 @@ namespace NicoNicoDownloader
                 while (!sr.EndOfStream)
                 {
                     string id = sr.ReadLine();
-                    if (id.IndexOf(commnent_symbol) != 0)    //id does not have comment symbol
+                    if (id.IndexOf(commnent_symbol) != 0 && !state_list.ContainsKey(id))    //id does not have comment symbol
                         state_list.Add(id, false);
                     else
                         Console.WriteLine(string.Format("{0} is skipped", id.Trim(commnent_symbol.ToCharArray())));
