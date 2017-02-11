@@ -11,7 +11,7 @@ namespace NicoNicoDownloader
 {
     class Program
     {
-        static CancellationTokenSource cancelToken = new CancellationTokenSource();
+        static BatchDownloadModel model;
         static void Main(string[] args)
         {
             Task t = MainAsync(args);
@@ -21,7 +21,7 @@ namespace NicoNicoDownloader
         {
             Console.CancelKeyPress += (s, e) =>
             {
-                cancelToken.Cancel();
+                model.Cancel();
                 e.Cancel = true;
                 Console.WriteLine("abort soon...");
             };
@@ -42,62 +42,35 @@ namespace NicoNicoDownloader
                 pass = args[1];
             }
 
-            NicoNicoDownload nico = new NicoNicoDownload();
-            nico.TitleConverter = TitileConverterInfo.Build("format.txt");
-            await nico.Login(email, pass);
+            model = await BatchDownloadModel.LoginAsync(email, pass, "format.txt");
 
             PowerManagement.PreventSleep();
 
-            const string commnent_symbol = "#";
+            model.LoadListFromFile("list.txt");
 
-            //key = niconico video id
-            //value = if download, value is true. 
-            Dictionary<string, bool> state_list = new Dictionary<string, bool>();
-
-            using (StreamReader sr = new StreamReader("list.txt"))
+            model.Progress = (id, state,msg) =>
             {
-                while (!sr.EndOfStream)
+                switch(state)
                 {
-                    string id = sr.ReadLine();
-                    if (id.IndexOf(commnent_symbol) != 0 && !state_list.ContainsKey(id))    //id does not have comment symbol
-                        state_list.Add(id, false);
-                    else
-                        Console.WriteLine(string.Format("{0} is skipped", id.Trim(commnent_symbol.ToCharArray())));
-                }
-            }
-
-            foreach(string id in state_list.Keys.ToList())
-            {
-                Console.WriteLine(string.Format("{0}...", id));
-                try
-                {
-                    await nico.GetMusicFile(id,cancelToken);
-                    if (cancelToken.IsCancellationRequested)
+                    case BatchDownloadProgressState.Begin:
+                        Console.WriteLine(string.Format("{0}...", id));
                         break;
-                    else
+                    case BatchDownloadProgressState.Complete:
                         Console.WriteLine("complete");
-                    state_list[id] = true;
+                        break;
+                    case BatchDownloadProgressState.Failed:
+                        Console.WriteLine(string.Format("failed.please see log.message is {0}", msg));
+                        break;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(string.Format("failed.please see log.message is {0}", ex.Message));
-                }
-            }
+            };
 
-            using (StreamWriter sw = new StreamWriter("list.txt"))
-            {
-                foreach(KeyValuePair<string,bool> state in state_list)
-                {
-                    if (state.Value)
-                        sw.WriteLine(commnent_symbol + state.Key);
-                    else
-                        sw.WriteLine(state.Key);
-                }
-            }
+            await model.DownloadAsync();
+
+            model.SaveListToFile("list.txt");
 
             PowerManagement.AllowMonitorPowerdown();
 
-            if (!cancelToken.IsCancellationRequested)
+            if (model.IsAborted)
                 Console.WriteLine("all task complete!");
             else
                 Console.WriteLine("aborted!");
