@@ -26,7 +26,7 @@ namespace NicoNicoDownloader
         public static void PreventSleep()
         {
             // Prevent Idle-to-Sleep (monitor not affected) (see note above)
-            bool result = Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS  | EXECUTION_STATE.ES_SYSTEM_REQUIRED | EXECUTION_STATE.ES_AWAYMODE_REQUIRED) != 0;
+            bool result = Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS  | EXECUTION_STATE.ES_SYSTEM_REQUIRED | EXECUTION_STATE.ES_AWAYMODE_REQUIRED| EXECUTION_STATE.ES_DISPLAY_REQUIRED) != 0;
             if (!result)
                 throw new Win32Exception();
         }

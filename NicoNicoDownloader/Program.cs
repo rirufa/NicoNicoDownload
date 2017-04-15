@@ -14,8 +14,10 @@ namespace NicoNicoDownloader
         static BatchDownloadModel model;
         static void Main(string[] args)
         {
+            PowerManagement.PreventSleep();
             Task t = MainAsync(args);
             t.Wait();
+            PowerManagement.AllowMonitorPowerdown();
         }
         static async Task MainAsync(string[] args)
         {
@@ -44,8 +46,6 @@ namespace NicoNicoDownloader
 
             model = await BatchDownloadModel.LoginAsync(email, pass, "format.txt");
 
-            PowerManagement.PreventSleep();
-
             model.LoadListFromFile("list.txt");
 
             model.Progress = (id, state,msg) =>
@@ -67,8 +67,6 @@ namespace NicoNicoDownloader
             await model.DownloadAsync();
 
             model.SaveListToFile("list.txt");
-
-            PowerManagement.AllowMonitorPowerdown();
 
             if (model.IsAborted)
                 Console.WriteLine("all task complete!");
