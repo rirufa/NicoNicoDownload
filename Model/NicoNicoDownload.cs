@@ -46,7 +46,8 @@ namespace NicoNicoDownloader.Model
             {
                 var videoManager = new VideoManager(cookieContainer, session.Session);
                 var video = await videoManager.GetVideoFlvAsync(nico_id);
-                string video_file_name = this.VideoToAudioConveter.GetVideoFileName(nico_id, this.GetCodecExt(video.Url));
+                var video_codec = this.GetCodecExt(video.Url);
+                string video_file_name = this.VideoToAudioConveter.GetVideoFileName(nico_id, video_codec);
                 using (var stream = await video.GetVideoAsync(nico_id, cookieContainer))
                 {
                     await this.VideoToAudioConveter.GetVideoFile(video_file_name, stream, token);
@@ -55,7 +56,7 @@ namespace NicoNicoDownloader.Model
 
                 var thumbManager = new ThumbManager(cookieContainer, session.Session);
                 var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
-                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(thumb.Title.Trim());
+                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(thumb.Title.Trim(), this.GetAudioCodec(video_codec));
                 this.VideoToAudioConveter.GetAudioFile(video_file_name, new_file_name);
 
                 Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", video_file_name, new_file_name));
@@ -101,6 +102,17 @@ namespace NicoNicoDownloader.Model
             info.CreateNoWindow = true;
             var p = System.Diagnostics.Process.Start(info);
             p.WaitForExit();
+        }
+
+        private string GetAudioCodec(string video_type)
+        {
+            switch (video_type)
+            {
+                case "flv":
+                    return "mp3";
+                default:
+                    return "m4a";
+            }
         }
 
         private string GetCodecExt(string url)
