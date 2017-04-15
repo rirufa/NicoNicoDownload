@@ -93,6 +93,7 @@ namespace NicoNicoDownloader.Model
                     else
                         Progress(id, BatchDownloadProgressState.Complete, null);
                     state_list[id] = true;
+                    await Task.Delay(1000 * 10);
                 }
                 catch (Exception ex)
                 {
