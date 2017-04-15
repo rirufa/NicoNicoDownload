@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace NicoNicoDownloader
@@ -25,22 +26,30 @@ namespace NicoNicoDownloader
         public static void PreventSleep()
         {
             // Prevent Idle-to-Sleep (monitor not affected) (see note above)
-            Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS  | EXECUTION_STATE.ES_SYSTEM_REQUIRED | EXECUTION_STATE.ES_AWAYMODE_REQUIRED);
+            bool result = Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS  | EXECUTION_STATE.ES_SYSTEM_REQUIRED | EXECUTION_STATE.ES_AWAYMODE_REQUIRED) != 0;
+            if (!result)
+                throw new Win32Exception();
         }
 
         public static void KeepSystemAwake()
         {
-            Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_SYSTEM_REQUIRED);
+            bool result = Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_SYSTEM_REQUIRED) != 0;
+            if (!result)
+                throw new Win32Exception();
         }
 
         public static void PreventMonitorPowerdown()
         {
-            Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_DISPLAY_REQUIRED | EXECUTION_STATE.ES_CONTINUOUS);
+           bool result = Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_DISPLAY_REQUIRED | EXECUTION_STATE.ES_CONTINUOUS) != 0;
+            if (!result)
+                throw new Win32Exception();
         }
 
         public static void AllowMonitorPowerdown()
         {
-            Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS);
+            bool result = Win32Api.SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS) != 0;
+            if (!result)
+                throw new Win32Exception();
         }
     }
 }
