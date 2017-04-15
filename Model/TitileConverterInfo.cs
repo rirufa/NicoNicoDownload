@@ -33,7 +33,9 @@ namespace NicoNicoDownloader.Model
                 {
                     Logger.Current.WriteLine(string.Format("{0} matched {1}", name, pattern));
                     return Regex.Replace(name, pattern, (e) => {
-                        return this.OutputParttern.Replace("%title%", e.Groups["title"].Value.Trim());
+                        return this.OutputParttern
+                            .Replace("%title%", e.Groups["title"].Value.Trim())
+                            .Replace("%album_artist%", e.Groups["album_artist"].Value.Trim());
                     });
                 }
             }

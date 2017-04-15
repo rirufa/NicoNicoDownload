@@ -14,10 +14,12 @@ namespace Test
             var converter = new TitileConverterInfo();
             converter.InputPattern = new List<string>()
             {
-                "【.+】(?<title>.+)"
+                ".+／(?<title>.+)",
+                "【(?<album_artist>.+)】(?<title>.+)"
             }.ToArray();
-            converter.OutputParttern = "_%title%";
-            Assert.AreEqual( "_a", converter.ConvertTitle("【test】a"));
+            converter.OutputParttern = "%album_artist%_%title%";
+            Assert.AreEqual( "test_a", converter.ConvertTitle("【test】a"));
+            Assert.AreEqual("_a", converter.ConvertTitle("test／a"));
         }
     }
 }
