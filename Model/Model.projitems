@@ -9,6 +9,7 @@
     <Import_RootNamespace>NicoNicoDownloader.Model</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AudioConveter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConsoleHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DownloadModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logger.cs" />

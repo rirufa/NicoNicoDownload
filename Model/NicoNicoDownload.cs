@@ -11,15 +11,13 @@ namespace NicoNicoDownloader.Model
 {
     class NicoNicoDownload
     {
-        //一時フォルダー（最後は円記号で終わらせること）
-        const string tempDirectory = "download\\";
-        const string tempFileName = "temp";
 
         NicoNico.Net.Entities.User.UserSession session;
         System.Net.CookieContainer cookieContainer;
 
         public NicoNicoDownload()
         {
+            this.VideoToAudioConveter = new VideoToAudioConveter();
         }
 
         public async Task Login(string email,string pass)
@@ -48,31 +46,24 @@ namespace NicoNicoDownloader.Model
             {
                 var videoManager = new VideoManager(cookieContainer, session.Session);
                 var video = await videoManager.GetVideoFlvAsync(nico_id);
-                string temp_file_name = string.Format(tempDirectory + "{0}.{1}", nico_id, this.GetCodecExt(video.Url));
+                string video_file_name = this.VideoToAudioConveter.GetVideoFileName(nico_id, this.GetCodecExt(video.Url));
                 using (var stream = await video.GetVideoAsync(nico_id, cookieContainer))
-                using (var sr = new FileStream(temp_file_name, System.IO.FileMode.Create))
                 {
-                    var count = 0;
-                    do
-                    {
-                        byte[] data = new byte[1024 * 1024];
-                        count = await stream.ReadAsync(data, 0, data.Length);
-                        await sr.WriteAsync(data, 0, count);
-                        if (token != null && token.IsCancellationRequested)
-                        {
-                            Logger.Current.WriteLine(string.Format("canceled get audio track from {0}", nico_id));
-                            return;
-                        }
-                    } while (count != 0);
+                    await this.VideoToAudioConveter.GetVideoFile(video_file_name, stream, token);
+                    Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", nico_id, video_file_name));
                 }
-                Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", temp_file_name, temp_file_name));
 
                 var thumbManager = new ThumbManager(cookieContainer, session.Session);
                 var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
-                string new_file_name = string.Format(tempDirectory + "{0}.m4a", this.TitleConverter.ConvertTitle(this.ConvertFileName(thumb.Title.Trim())));
-                this.GetAudioFile(temp_file_name, new_file_name);
+                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(thumb.Title.Trim());
+                this.VideoToAudioConveter.GetAudioFile(video_file_name, new_file_name);
 
-                Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", temp_file_name, new_file_name));
+                Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", video_file_name, new_file_name));
+            }
+            catch (TaskCanceledException)
+            {
+                Logger.Current.WriteLine(string.Format("canceled get video track from {0}", nico_id));
+                return;
             }
             catch (Exception ex)
             {
@@ -82,10 +73,22 @@ namespace NicoNicoDownloader.Model
             }
         }
 
-        public TitileConverterInfo TitleConverter
+        public VideoToAudioConveter VideoToAudioConveter
         {
             get;
             set;
+        }
+
+        public TitileConverterInfo TitleConverter
+        {
+            get
+            {
+                return this.VideoToAudioConveter.TitleConverter;
+            }
+            set
+            {
+                this.VideoToAudioConveter.TitleConverter = value;
+            }
         }
 
         private void GetAudioFile(string temp_file_name,string new_file_name)
@@ -98,20 +101,6 @@ namespace NicoNicoDownloader.Model
             info.CreateNoWindow = true;
             var p = System.Diagnostics.Process.Start(info);
             p.WaitForExit();
-        }
-
-        private string ConvertFileName(string name)
-        {
-            string new_name = name.Replace('?', '？');
-            new_name = new_name.Replace('"', '”');
-            new_name = new_name.Replace('/', '／');
-            new_name = new_name.Replace('\'', '’');
-            new_name = new_name.Replace('\\', '￥');
-            new_name = new_name.Replace('<', '＜');
-            new_name = new_name.Replace('>', '＞');
-            new_name = new_name.Replace('*', '＊');
-            new_name = new_name.Replace('|', '｜');
-            return new_name.Replace(':', '：');
         }
 
         private string GetCodecExt(string url)
