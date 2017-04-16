@@ -95,6 +95,7 @@ namespace NicoNicoDownloader.Model
                     else
                     {
                         Progress(id, BatchDownloadProgressState.Complete, null);
+                        Thread.Sleep(1000 * 10);
                     }
                     state_list[id] = true;
                 }
