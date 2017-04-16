@@ -45,7 +45,8 @@ namespace NicoNicoDownloader.Model
 
         public async Task GetVideoFile(string temp_file_name, Stream stream, CancellationTokenSource token = null)
         {
-            using (var sr = new FileStream(temp_file_name, System.IO.FileMode.Create))
+            var download_file = temp_file_name + ".part";
+            using (var sr = new FileStream(download_file, System.IO.FileMode.Create))
             {
                 var count = 0;
                 do
@@ -59,6 +60,7 @@ namespace NicoNicoDownloader.Model
                     }
                 } while (count != 0);
             }
+            File.Move(download_file, temp_file_name);
         }
 
         public void GetAudioFile(string temp_file_name, string audio_file_name)
