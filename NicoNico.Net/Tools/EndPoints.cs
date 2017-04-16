@@ -79,7 +79,7 @@ namespace NicoNico.Net.Tools
 
         public const string ThumbInfo = "http://ext.nicovideo.jp/api/getthumbinfo/{0}";
 
-        public const string VideoFlv = "http://flapi.nicovideo.jp/api/getflv?device={0}&eco={1}&v={2}";
+        public const string VideoFlv = "http://flapi.nicovideo.jp/api/getflv?device={0}&eco={1}&v={2}&as3=1";
 
         public const string SearchSuggestion = "http://search.nicovideo.jp/suggestion/complete/";
 

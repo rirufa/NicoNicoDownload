@@ -117,6 +117,8 @@ namespace NicoNicoDownloader.Model
             {
                 case "flv":
                     return "mp3";
+                case "swf":
+                    return "mp3";
                 default:
                     return "m4a";
             }
