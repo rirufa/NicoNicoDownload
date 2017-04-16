@@ -48,18 +48,10 @@ namespace NicoNicoDownloader.Model
                 var video = await videoManager.GetVideoFlvAsync(nico_id);
                 var video_codec = this.GetCodecExt(video.Url);
                 string video_file_name = this.VideoToAudioConveter.GetVideoFileName(nico_id, video_codec);
-                if(File.Exists(video_file_name))
+                using (var stream = await video.GetVideoAsync(nico_id, cookieContainer))
                 {
-                    Logger.Current.WriteLine(string.Format("skipped to get video from {0}.{1} is exist", nico_id, video_file_name));
-                }
-                else
-                {
-                    using (var stream = await video.GetVideoAsync(nico_id, cookieContainer))
-                    {
-                        await this.VideoToAudioConveter.GetVideoFile(video_file_name, stream, token);
-                        Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", nico_id, video_file_name));
-                    }
-
+                    await this.VideoToAudioConveter.GetVideoFile(video_file_name, stream, token);
+                    Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", nico_id, video_file_name));
                 }
                 var thumbManager = new ThumbManager(cookieContainer, session.Session);
                 var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
