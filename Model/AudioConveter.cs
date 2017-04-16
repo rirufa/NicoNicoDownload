@@ -25,17 +25,13 @@ namespace NicoNicoDownloader.Model
             return string.Format(VideoToAudioConveter.tempDirectory + "{0}.{1}", namepart, ext);
         }
 
-        public string GetAudioFileName(string namepart,string ext)
-        {
-            return string.Format(VideoToAudioConveter.tempDirectory + "{0}.{1}", namepart, ext);
-        }
-
         public string GetAudioFileName(string title, string audio_format, string description)
         {
+            var original_titile = this.ConvertFileName(title);
             var file_name_part = this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description);
             //同じファイル名（拡張子を除く）が存在するかどうか
             var isexist = Directory.EnumerateFiles(tempDirectory, file_name_part + ".*").Count() > 0;
-            return isexist ? null : string.Format(tempDirectory + "{0}.{1}", file_name_part, audio_format);
+            return isexist ? original_titile : string.Format(tempDirectory + "{0}.{1}", file_name_part, audio_format);
         }
 
         private string ConvertFileName(string name)

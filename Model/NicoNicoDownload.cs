@@ -57,8 +57,6 @@ namespace NicoNicoDownloader.Model
                 var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
                 var audio_codec = this.GetAudioCodec(video_codec);
                 string new_file_name = this.VideoToAudioConveter.GetAudioFileName(thumb.Title.Trim(), audio_codec, thumb.Description);
-                if (new_file_name == null)
-                    new_file_name = this.VideoToAudioConveter.GetAudioFileName(nico_id, audio_codec);
                 this.VideoToAudioConveter.GetAudioFile(video_file_name, new_file_name);
 
                 File.Delete(video_file_name);
