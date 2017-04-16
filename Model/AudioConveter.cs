@@ -60,7 +60,7 @@ namespace NicoNicoDownloader.Model
                 var count = 0;
                 do
                 {
-                    byte[] data = new byte[64 * 1024];
+                    byte[] data = new byte[256 * 1024];
                     count = await stream.ReadAsync(data, 0, data.Length);
                     await sr.WriteAsync(data, 0, count);
                     if (token != null && token.IsCancellationRequested)
