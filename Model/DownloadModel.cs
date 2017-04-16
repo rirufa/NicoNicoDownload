@@ -89,11 +89,14 @@ namespace NicoNicoDownloader.Model
                 {
                     await nico.GetMusicFile(id, cancelToken);
                     if (cancelToken.IsCancellationRequested)
+                    {
                         break;
+                    }
                     else
+                    {
                         Progress(id, BatchDownloadProgressState.Complete, null);
+                    }
                     state_list[id] = true;
-                    await Task.Delay(1000 * 10);
                 }
                 catch (Exception ex)
                 {
