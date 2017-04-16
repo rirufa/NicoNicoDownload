@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,9 +25,17 @@ namespace NicoNicoDownloader.Model
             return string.Format(VideoToAudioConveter.tempDirectory + "{0}.{1}", namepart, ext);
         }
 
+        public string GetAudioFileName(string namepart,string ext)
+        {
+            return string.Format(VideoToAudioConveter.tempDirectory + "{0}.{1}", namepart, ext);
+        }
+
         public string GetAudioFileName(string title, string audio_format, string description)
         {
-            return string.Format(tempDirectory + "{0}.{1}", this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description), audio_format);
+            var file_name_part = this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description);
+            //同じファイル名（拡張子を除く）が存在するかどうか
+            var isexist = Directory.EnumerateFiles(tempDirectory, file_name_part + ".*").Count() > 0;
+            return isexist ? null : string.Format(tempDirectory + "{0}.{1}", file_name_part, audio_format);
         }
 
         private string ConvertFileName(string name)

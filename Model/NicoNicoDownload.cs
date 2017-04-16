@@ -63,8 +63,13 @@ namespace NicoNicoDownloader.Model
                 }
                 var thumbManager = new ThumbManager(cookieContainer, session.Session);
                 var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
-                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(thumb.Title.Trim(), this.GetAudioCodec(video_codec), thumb.Description);
+                var audio_codec = this.GetAudioCodec(video_codec);
+                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(thumb.Title.Trim(), audio_codec, thumb.Description);
+                if (new_file_name == null)
+                    new_file_name = this.VideoToAudioConveter.GetAudioFileName(nico_id, audio_codec);
                 this.VideoToAudioConveter.GetAudioFile(video_file_name, new_file_name);
+
+                File.Delete(video_file_name);
 
                 Logger.Current.WriteLine(string.Format("get audio track from {0} and saved to {1}", video_file_name, new_file_name));
             }
