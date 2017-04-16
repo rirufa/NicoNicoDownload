@@ -32,10 +32,10 @@ namespace NicoNicoDownloader.Model
             this.nico = nico;
         }
 
-        public async static Task<BatchDownloadModel> LoginAsync(string email, string pass, string title_path)
+        public async static Task<BatchDownloadModel> LoginAsync(string email, string pass, string title_path,string known_band_list_path)
         {
             NicoNicoDownload nico = new NicoNicoDownload();
-            nico.TitleConverter = TitileConverterInfo.Build(title_path);
+            nico.TitleConverter = TitileConverterInfo.Build(title_path, known_band_list_path);
             await nico.Login(email, pass);
 
             BatchDownloadModel _model = new BatchDownloadModel(nico);

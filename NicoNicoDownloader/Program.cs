@@ -44,7 +44,7 @@ namespace NicoNicoDownloader
                 pass = args[1];
             }
 
-            model = await BatchDownloadModel.LoginAsync(email, pass, "format.txt");
+            model = await BatchDownloadModel.LoginAsync(email, pass, "format.txt", "bands.txt");
 
             model.LoadListFromFile("list.txt");
 

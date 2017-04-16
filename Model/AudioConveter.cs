@@ -24,9 +24,9 @@ namespace NicoNicoDownloader.Model
             return string.Format(VideoToAudioConveter.tempDirectory + "{0}.{1}", namepart, ext);
         }
 
-        public string GetAudioFileName(string title, string audio_format)
+        public string GetAudioFileName(string title, string audio_format, string description)
         {
-            return string.Format(tempDirectory + "{0}.{1}", this.TitleConverter.ConvertTitle(this.ConvertFileName(title)), audio_format);
+            return string.Format(tempDirectory + "{0}.{1}", this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description), audio_format);
         }
 
         private string ConvertFileName(string name)
