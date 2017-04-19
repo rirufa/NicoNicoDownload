@@ -72,7 +72,8 @@ namespace NicoNicoDownloader.Model
                 m = regex.Match(description);
                 if (m.Success)
                 {
-                    band_name = m.Groups[1].Value.Trim();
+                    //グループ指定がされない場合は最初の要素以外に値が放り込まれない
+                    band_name = (m.Groups[1].Value == string.Empty ? m.Groups[0].Value : m.Groups[1].Value).Trim();
                     break;
                 }
             }

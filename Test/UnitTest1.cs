@@ -40,6 +40,8 @@ namespace Test
             Assert.AreEqual("test___a", converter.ConvertTitle("【test】a"));
             Assert.AreEqual("test___a", converter.ConvertTitle("test／a"));
             Assert.AreEqual("test___a", converter.ConvertTitle("vocal／a", "サークル:test"));
+            Assert.AreEqual("test___a", converter.ConvertTitle("vocal／a", "testのa"));
         }
+
     }
 }
