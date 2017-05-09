@@ -31,7 +31,10 @@ namespace NicoNicoDownloader.Model
             var file_name_part = this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description);
             //同じファイル名（拡張子を除く）が存在するかどうか
             var isexist = Directory.EnumerateFiles(tempDirectory, file_name_part + ".*").Count() > 0;
-            return isexist ? original_titile : string.Format(tempDirectory + "{0}.{1}", file_name_part, audio_format);
+            if(isexist)
+                return string.Format(tempDirectory + "dup_{0}.{1}", file_name_part, audio_format);
+            else
+                return string.Format(tempDirectory + "{0}.{1}", file_name_part, audio_format);
         }
 
         private string ConvertFileName(string name)
