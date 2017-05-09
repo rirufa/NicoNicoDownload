@@ -30,5 +30,11 @@ namespace NicoNico.Net.Managers
             var entity = result.ResultXml.ParseXml<ThumbnailEntity>();
             return entity.Thumbnail;
         }
+
+        public async Task<Thumb> GetThumbInfoWithSepartorAsync(string videoId)
+        {
+            var result = await _webManager.GetData(new Uri(string.Format(EndPoints.VITA_ThumbInfo, videoId)));
+            return result.ResultXml.ParseXml<ThumbnailEntity>().Thumbnail;
+        }
     }
 }

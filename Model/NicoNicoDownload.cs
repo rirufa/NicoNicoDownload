@@ -45,6 +45,7 @@ namespace NicoNicoDownloader.Model
             try
             {
                 var videoManager = new VideoManager(cookieContainer, session.Session);
+                var video_info = await videoManager.GetVideoInfoAsync(nico_id);
                 var video = await videoManager.GetVideoFlvAsync(nico_id);
                 var video_codec = this.GetCodecExt(video.Url);
                 string video_file_name = this.VideoToAudioConveter.GetVideoFileName(nico_id, video_codec);
@@ -53,10 +54,8 @@ namespace NicoNicoDownloader.Model
                     await this.VideoToAudioConveter.GetVideoFile(video_file_name, stream, token);
                     Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", nico_id, video_file_name));
                 }
-                var thumbManager = new ThumbManager(cookieContainer, session.Session);
-                var thumb = await thumbManager.GetThumbInfoAsync(nico_id);
                 var audio_codec = this.GetAudioCodec(video_codec);
-                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(thumb.Title.Trim(), audio_codec, thumb.Description);
+                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(video_info.Video.Title.Trim(), audio_codec, video_info.Video.Description);
                 this.VideoToAudioConveter.GetAudioFile(video_file_name, new_file_name);
 
                 File.Delete(video_file_name);

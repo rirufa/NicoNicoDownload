@@ -78,6 +78,9 @@ namespace NicoNico.Net.Entities.Video
         [XmlElement("title")]
         public string Title { get; set; }
 
+        [XmlElement("description")]
+        public string Description { get; set; }
+
         [XmlElement("length_in_seconds")]
         public int LengthInSeconds { get; set; }
 
