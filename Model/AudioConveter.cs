@@ -29,12 +29,20 @@ namespace NicoNicoDownloader.Model
         {
             var original_titile = this.ConvertFileName(title);
             var file_name_part = this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description);
-            //同じファイル名（拡張子を除く）が存在するかどうか
-            var isexist = Directory.EnumerateFiles(tempDirectory, file_name_part + ".*").Count() > 0;
-            if(isexist)
-                return string.Format(tempDirectory + "dup_{0}.{1}", file_name_part, audio_format);
-            else
-                return string.Format(tempDirectory + "{0}.{1}", file_name_part, audio_format);
+            try
+            {
+                //同じファイル名（拡張子を除く）が存在するかどうか
+                var isexist = Directory.EnumerateFiles(tempDirectory, file_name_part + ".*").Count() > 0;
+                if (isexist)
+                    return string.Format(tempDirectory + "dup_{0}.{1}", file_name_part, audio_format);
+                else
+                    return string.Format(tempDirectory + "{0}.{1}", file_name_part, audio_format);
+            }
+            catch(Exception ex)
+            {
+                Logger.Current.WriteLine(string.Format("happen something wrong in GetAudioFileName (file_name_part:{0})", file_name_part));
+                throw ex;
+            }
         }
 
         private string ConvertFileName(string name)
