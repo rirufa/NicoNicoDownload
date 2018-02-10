@@ -68,7 +68,7 @@ namespace NicoNicoDownloader
 
             model.SaveListToFile("list.txt");
 
-            if (model.IsAborted)
+            if (!model.IsAborted)
                 Console.WriteLine("all task complete!");
             else
                 Console.WriteLine("aborted!");
