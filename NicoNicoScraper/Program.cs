@@ -41,7 +41,8 @@ namespace NicoNicoScraper
             await scraper.Login(email, pass);
             foreach(var search in scraper.Scrape(query))
             {
-                Console.WriteLine(string.Format("{0}:{1},{2}",search.ContentId,search.Title,search.StartTime));
+                Console.WriteLine(string.Format("#{0}", search.Title));
+                Console.WriteLine(string.Format("{0}",search.ContentId,search.Title,search.StartTime));
             }
         }
     }
