@@ -45,7 +45,7 @@ namespace NicoNicoScraper
             List<DownloadMusicItem> item = new List<DownloadMusicItem>();
             foreach(var search in scraper.Scrape(query))
             {
-                item.Add(new DownloadMusicItem(search.ContentId, search.Title));
+                item.Add(search);
             }
             DownloadMusic music = new DownloadMusic();
             music.items = item.ToArray();

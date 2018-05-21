@@ -40,8 +40,9 @@ namespace NicoNicoDownloader.Model
         }
 
 
-        public async Task GetMusicFile(string nico_id, CancellationTokenSource token = null)
+        public async Task GetMusicFile(DownloadMusicItem item, CancellationTokenSource token = null)
         {
+            string nico_id = item.id;
             try
             {
                 var videoManager = new VideoManager(cookieContainer, session.Session);
@@ -55,7 +56,7 @@ namespace NicoNicoDownloader.Model
                     Logger.Current.WriteLine(string.Format("get video from {0} and saved to {1}", nico_id, video_file_name));
                 }
                 var audio_codec = this.GetAudioCodec(video_codec);
-                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(video_info.Video.Title.Trim(), audio_codec, video_info.Video.Description);
+                string new_file_name = this.VideoToAudioConveter.GetAudioFileName(item.music_name, audio_codec);
                 this.VideoToAudioConveter.GetAudioFile(video_file_name, new_file_name);
 
                 File.Delete(video_file_name);

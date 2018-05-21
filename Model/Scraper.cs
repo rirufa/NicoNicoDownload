@@ -42,9 +42,10 @@ namespace NicoNicoDownloader.Model
             authManager = new AuthenticationManager(cookieContainer, session.Session);
 
             var test = await authManager.ExtendUserSessionAsync();
+
         }
 
-        public IEnumerable<Search> Scrape(string query)
+        public IEnumerable<DownloadMusicItem> Scrape(string query)
         {
             const int max_records = 100;
             SearchManager search_manager = new SearchManager(cookieContainer, session.Session);
@@ -57,9 +58,16 @@ namespace NicoNicoDownloader.Model
                         .Limit(max_records)
                         .Range(NicoNicoFilter.StartTime,NicoNicoFilterOperator.Gte,this.lastDateTime)
                     );
+                var videoToAudioConveter = new VideoToAudioConveter();
+                videoToAudioConveter.TitleConverter = TitileConverterInfo.Build("format.txt", "bands.txt");
                 var search_result = search_task.Result;
                 foreach (var search in search_result.Data)
-                    yield return search;
+                {
+                    Logger.Current.WriteLine(string.Format("getting titile from {0}", search.ContentId));
+                    Logger.Current.WriteLine(string.Format("title:{0} description:{1}", search.Title, search.Description));
+                    string title = videoToAudioConveter.GetMusicTitle(search.Title, search.Description);
+                    yield return new DownloadMusicItem(search.ContentId, title);
+                }
             }
 
             using (StreamWriter sw = new StreamWriter(config_file_name))

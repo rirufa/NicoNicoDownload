@@ -58,10 +58,10 @@ namespace NicoNicoDownloader.Model
             this.nico = nico;
         }
 
-        public async static Task<BatchDownloadModel> LoginAsync(string email, string pass, string title_path,string known_band_list_path)
+        public async static Task<BatchDownloadModel> LoginAsync(string email, string pass)
         {
             NicoNicoDownload nico = new NicoNicoDownload();
-            nico.TitleConverter = TitileConverterInfo.Build(title_path, known_band_list_path);
+            nico.TitleConverter = TitileConverterInfo.Build("format.txt", "bands.txt");
             await nico.Login(email, pass);
 
             BatchDownloadModel _model = new BatchDownloadModel(nico);
@@ -104,7 +104,7 @@ namespace NicoNicoDownloader.Model
                 Progress(item.id, BatchDownloadProgressState.Begin,null);
                 try
                 {
-                    await nico.GetMusicFile(item.id, cancelToken);
+                    await nico.GetMusicFile(item, cancelToken);
                     if (cancelToken.IsCancellationRequested)
                     {
                         break;
