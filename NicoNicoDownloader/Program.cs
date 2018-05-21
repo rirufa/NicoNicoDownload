@@ -46,7 +46,7 @@ namespace NicoNicoDownloader
 
             model = await BatchDownloadModel.LoginAsync(email, pass, "format.txt", "bands.txt");
 
-            model.LoadListFromFile("list.txt");
+            model.LoadListFromFile("list.xml");
 
             model.Progress = (id, state,msg) =>
             {
@@ -66,7 +66,7 @@ namespace NicoNicoDownloader
 
             await model.DownloadAsync();
 
-            model.SaveListToFile("list.txt");
+            model.SaveListToFile("list.xml");
 
             if (!model.IsAborted)
                 Console.WriteLine("all task complete!");

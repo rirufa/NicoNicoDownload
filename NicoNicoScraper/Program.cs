@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NicoNicoDownloader.Model;
+using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace NicoNicoScraper
 {
@@ -39,11 +42,15 @@ namespace NicoNicoScraper
 
             Scraper scraper = new Scraper();
             await scraper.Login(email, pass);
+            List<DownloadMusicItem> item = new List<DownloadMusicItem>();
             foreach(var search in scraper.Scrape(query))
             {
-                Console.WriteLine(string.Format("#{0}", search.Title));
-                Console.WriteLine(string.Format("{0}",search.ContentId,search.Title,search.StartTime));
+                item.Add(new DownloadMusicItem(search.ContentId, search.Title));
             }
+            DownloadMusic music = new DownloadMusic();
+            music.items = item.ToArray();
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(DownloadMusic));
+            xmlSerializer.Serialize(Console.Out, music);
         }
     }
 }

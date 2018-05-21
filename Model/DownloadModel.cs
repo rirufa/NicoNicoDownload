@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace NicoNicoDownloader.Model
 {
@@ -15,13 +17,37 @@ namespace NicoNicoDownloader.Model
         Failed
     }
 
+    [XmlRootAttribute("DownloadMusic", IsNullable = false)]
+    public class DownloadMusic
+    {
+        public string Version;
+        [XmlArrayAttribute]
+        public DownloadMusicItem[] items;
+        public DownloadMusic()
+        {
+            this.Version = "1.0";
+        }
+    }
+
+    public class DownloadMusicItem
+    {
+        public string id;
+        public bool IsFinished;
+        public string music_name;
+        public DownloadMusicItem()
+        {
+            this.IsFinished = false;
+        }
+        public DownloadMusicItem(string id,string name) : this()
+        {
+            this.id = id;
+            this.music_name = name;
+        }
+    }
+
     class BatchDownloadModel
     {
-        const string commnent_symbol = "#";
-
-        //key = niconico video id
-        //value = if download, value is true. 
-        private Dictionary<string, bool> state_list = new Dictionary<string, bool>();
+        private DownloadMusic downloadMusic;
 
         private NicoNicoDownload nico;
 
@@ -44,28 +70,19 @@ namespace NicoNicoDownloader.Model
 
         public void LoadListFromFile(string filepath)
         {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(DownloadMusic));
             using (StreamReader sr = new StreamReader(filepath))
             {
-                while (!sr.EndOfStream)
-                {
-                    string id = sr.ReadLine();
-                    if (id.IndexOf(commnent_symbol) != 0 && !state_list.ContainsKey(id))    //id does not have comment symbol
-                        state_list.Add(id, false);
-                }
+                this.downloadMusic = (DownloadMusic)xmlSerializer.Deserialize(sr);
             }
         }
 
         public void SaveListToFile(string filepath)
         {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(DownloadMusic));
             using (StreamWriter sw = new StreamWriter(filepath))
             {
-                foreach (KeyValuePair<string, bool> state in state_list)
-                {
-                    if (state.Value)
-                        sw.WriteLine(commnent_symbol + state.Key);
-                    else
-                        sw.WriteLine(state.Key);
-                }
+                xmlSerializer.Serialize(sw, this.downloadMusic);
             }
         }
 
@@ -82,26 +99,26 @@ namespace NicoNicoDownloader.Model
 
         public async Task DownloadAsync()
         {
-            foreach (string id in state_list.Keys.ToList())
+            foreach (var item in this.downloadMusic.items)
             {
-                Progress(id, BatchDownloadProgressState.Begin,null);
+                Progress(item.id, BatchDownloadProgressState.Begin,null);
                 try
                 {
-                    await nico.GetMusicFile(id, cancelToken);
+                    await nico.GetMusicFile(item.id, cancelToken);
                     if (cancelToken.IsCancellationRequested)
                     {
                         break;
                     }
                     else
                     {
-                        Progress(id, BatchDownloadProgressState.Complete, null);
+                        Progress(item.id, BatchDownloadProgressState.Complete, null);
                         Thread.Sleep(1000 * 10);
                     }
-                    state_list[id] = true;
+                    item.IsFinished = true;
                 }
                 catch (Exception ex)
                 {
-                    Progress(id, BatchDownloadProgressState.Failed,ex.Message);
+                    Progress(item.id, BatchDownloadProgressState.Failed,ex.Message);
                 }
             }
         }
