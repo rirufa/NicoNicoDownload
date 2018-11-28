@@ -71,7 +71,7 @@ namespace NicoNicoDownloader.Model
         public void LoadListFromFile(string filepath)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(DownloadMusic));
-            using (StreamReader sr = new StreamReader(filepath))
+            using (StreamReader sr = new StreamReader(filepath, Encoding.UTF8))
             {
                 this.downloadMusic = (DownloadMusic)xmlSerializer.Deserialize(sr);
             }
@@ -80,7 +80,7 @@ namespace NicoNicoDownloader.Model
         public void SaveListToFile(string filepath)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(DownloadMusic));
-            using (StreamWriter sw = new StreamWriter(filepath))
+            using (StreamWriter sw = new StreamWriter(filepath,false,Encoding.UTF8))
             {
                 xmlSerializer.Serialize(sw, this.downloadMusic);
             }

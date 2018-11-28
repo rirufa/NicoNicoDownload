@@ -50,7 +50,10 @@ namespace NicoNicoScraper
             DownloadMusic music = new DownloadMusic();
             music.items = item.ToArray();
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(DownloadMusic));
-            xmlSerializer.Serialize(Console.Out, music);
+            using (StreamWriter sw = new StreamWriter("list.xml", false, Encoding.UTF8))
+            {
+                xmlSerializer.Serialize(sw, music);
+            }
         }
     }
 }
