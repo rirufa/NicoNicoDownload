@@ -32,7 +32,8 @@ namespace NicoNicoDownloader.Model
 
         public string ConvertTitle(string name,string description = "")
         {
-            string band_name = this.GetBandName(name, description);
+            string parsed_description = Regex.Replace(description, "<br />", "\n");
+            string band_name = this.GetBandName(name, parsed_description);
             foreach (string pattern in this.InputPattern)
             {
                 Regex regex = new Regex(pattern);
