@@ -101,6 +101,8 @@ namespace NicoNicoDownloader.Model
         {
             foreach (var item in this.downloadMusic.items)
             {
+                if (item.IsFinished == true)
+                    continue;
                 Progress(item.id, BatchDownloadProgressState.Begin,null);
                 try
                 {
