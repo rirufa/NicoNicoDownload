@@ -33,23 +33,23 @@ namespace NicoNicoDownloader.Model
 
         public string GetMusicTitle(string title, string description)
         {
-            //_org_titleはスクリプト側にわたるオリジナルのタイトル
-            //_org_descはスクリプト側にわたるディスクリプション
+            //_title_converterはスクリプト側にわたるタイトルコンバータークラス
             //_resultはスクリプト側でパースした結果のタイトル
-            if(File.Exists(scriptFileName))
+            if (File.Exists(scriptFileName))
             {
                 ScriptSource src = engine.CreateScriptSourceFromFile(scriptFileName);
                 ScriptScope scope = engine.CreateScope();
-                scope.SetVariable("_org_title", title);
-                scope.SetVariable("_org_desc", description);
+                this.TitleConverter.Title = title;
+                this.TitleConverter.Description = description;
+                scope.SetVariable("_title_converter", this.TitleConverter);
+                scope.SetVariable("_logger", Logger.Current);
                 src.Execute<string>(scope);
                 string original_title = scope.GetVariable<string>("_result");
                 return this.ConvertFileName(original_title);
             }
             else
             {
-                var original_titile = this.ConvertFileName(title);
-                return this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description);
+                return this.ConvertFileName(title);
             }
         }
 

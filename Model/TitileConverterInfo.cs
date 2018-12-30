@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace NicoNicoDownloader.Model
 {
@@ -11,6 +12,10 @@ namespace NicoNicoDownloader.Model
         public TitileConverterInfo()
         {
         }
+
+        public string Title = null;
+
+        public string Description = null;
 
         public string[] InputPattern
         {
@@ -32,8 +37,7 @@ namespace NicoNicoDownloader.Model
 
         public string ConvertTitle(string name,string description = "")
         {
-            string parsed_description = Regex.Replace(description, "<br />", "\n");
-            string band_name = this.GetBandName(name, parsed_description);
+            string band_name = this.GetBandName(name, ParseDescription(description));
             foreach (string pattern in this.InputPattern)
             {
                 Regex regex = new Regex(pattern);
@@ -41,18 +45,40 @@ namespace NicoNicoDownloader.Model
                 {
                     Logger.Current.WriteLine(string.Format("{0} matched {1}", name, pattern));
                     return Regex.Replace(name, pattern, (e) => {
-                        string output = this.OutputParttern;
-
-                        if (band_name != null)
-                            output = output.Replace("%known_album_artist%", band_name);
-
-                        return output
-                            .Replace("%title%", e.Groups["title"].Value.Trim())
-                            .Replace("%album_artist%", e.Groups["album_artist"].Value.Trim());
+                        return ParseOutputPartten(band_name, e.Groups["title"].Value.Trim(), e.Groups["album_artist"].Value.Trim());
                     });
                 }
             }
             return name;
+        }
+
+        public string[] SplitToken(string s,char[] tokens)
+        {
+            var result = s.Split(tokens,StringSplitOptions.RemoveEmptyEntries);
+            return result;
+        }
+
+        public string ParseOutputPartten(string band_name,string album_artist, string title)
+        {
+            string output = this.OutputParttern;
+
+            if (band_name != null)
+                output = output.Replace("%known_album_artist%", band_name);
+
+            return output
+                .Replace("%title%", title)
+                .Replace("%album_artist%", album_artist);
+        }
+
+        public string ParseDescription(string description)
+        {
+            return Regex.Replace(description, "<br />", "\n");
+        }
+
+        public bool IsBandName(string name)
+        {
+            string band_name = GetBandName(name, "");
+            return band_name != null;
         }
 
         private string GetBandName(string name, string description)

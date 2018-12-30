@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NicoNicoDownloader.Model
 {
-    class Logger
+    public class Logger
     {
         System.Diagnostics.TraceSource log = new System.Diagnostics.TraceSource("Niconico Download Log", System.Diagnostics.SourceLevels.Information);
 
