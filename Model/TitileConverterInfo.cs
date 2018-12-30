@@ -72,7 +72,8 @@ namespace NicoNicoDownloader.Model
 
         public string ParseDescription(string description)
         {
-            return Regex.Replace(description, "<br />", "\n");
+            var parsed = Regex.Replace(description, "<br />", "\n");
+            return Regex.Replace(parsed, "<br>", "\n");
         }
 
         public bool IsBandName(string name)
