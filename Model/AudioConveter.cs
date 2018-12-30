@@ -3,6 +3,8 @@ using System.Linq;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,6 +15,10 @@ namespace NicoNicoDownloader.Model
         //一時フォルダー（最後は円記号で終わらせること）
         public const string tempDirectory = "download\\";
         const string tempFileName = "temp";
+        //スクリプトファイル名
+        const string scriptFileName = "script.py";
+
+        ScriptEngine engine = Python.CreateEngine();
 
         public TitileConverterInfo TitleConverter
         {
@@ -27,8 +33,24 @@ namespace NicoNicoDownloader.Model
 
         public string GetMusicTitle(string title, string description)
         {
-            var original_titile = this.ConvertFileName(title);
-            return this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description);
+            //_org_titleはスクリプト側にわたるオリジナルのタイトル
+            //_org_descはスクリプト側にわたるディスクリプション
+            //_resultはスクリプト側でパースした結果のタイトル
+            if(File.Exists(scriptFileName))
+            {
+                ScriptSource src = engine.CreateScriptSourceFromFile(scriptFileName);
+                ScriptScope scope = engine.CreateScope();
+                scope.SetVariable("_org_title", title);
+                scope.SetVariable("_org_desc", description);
+                src.Execute<string>(scope);
+                string original_title = scope.GetVariable<string>("_result");
+                return this.ConvertFileName(original_title);
+            }
+            else
+            {
+                var original_titile = this.ConvertFileName(title);
+                return this.TitleConverter.ConvertTitle(this.ConvertFileName(title), description);
+            }
         }
 
         public string GetAudioFileName(string file_name_part, string audio_format)
