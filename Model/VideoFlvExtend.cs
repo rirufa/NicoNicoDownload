@@ -27,6 +27,8 @@ namespace NicoNicoDownloader.Model
             cookieContainer.Add(new System.Net.Cookie("nicohistory", nicohistory, "/", "nicovideo.jp"));
             var reqLog = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(video.Url);
             reqLog.CookieContainer = cookieContainer;
+            //ユーザーエージェントを追加しないと突然接続が落とされることがある
+            reqLog.UserAgent = ua;
             var resLog = reqLog.GetResponse();
             return resLog.GetResponseStream();
         }
