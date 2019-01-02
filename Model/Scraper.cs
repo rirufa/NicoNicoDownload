@@ -59,7 +59,7 @@ namespace NicoNicoDownloader.Model
                         .Range(NicoNicoFilter.StartTime,NicoNicoFilterOperator.Gte,this.lastDateTime)
                     );
                 var videoToAudioConveter = new VideoToAudioConveter();
-                videoToAudioConveter.TitleConverter = TitileConverterInfo.Build("format.txt", "bands.txt");
+                videoToAudioConveter.TitleConverter = TitileConverterInfo.Build("format.txt", "bands.txt", "ignore.txt");
                 var search_result = search_task.Result;
                 foreach (var search in search_result.Data)
                 {

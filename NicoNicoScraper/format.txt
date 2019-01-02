@@ -1,0 +1,2 @@
+%known_album_artist%___%title%
+ã»ñºÅF(?<title>.+)

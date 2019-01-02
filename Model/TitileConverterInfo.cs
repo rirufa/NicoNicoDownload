@@ -35,21 +35,26 @@ namespace NicoNicoDownloader.Model
             set;
         }
 
-        public string ConvertTitle(string name,string description = "")
+        public string[] IgnoreTokenList
         {
-            string band_name = this.GetBandName(name, ParseDescription(description));
+            get;
+            set;
+        }
+
+        public string GetTitle(string description)
+        {
+            string title = null;
             foreach (string pattern in this.InputPattern)
             {
                 Regex regex = new Regex(pattern);
-                if (regex.IsMatch(name))
+                Match m = regex.Match(description);
+                if (m.Success)
                 {
-                    Logger.Current.WriteLine(string.Format("{0} matched {1}", name, pattern));
-                    return Regex.Replace(name, pattern, (e) => {
-                        return ParseOutputPartten(band_name, e.Groups["title"].Value.Trim(), e.Groups["album_artist"].Value.Trim());
-                    });
+                    title = m.Groups["title"].Value.Trim();
+                    return title;
                 }
             }
-            return name;
+            return title;
         }
 
         public string[] SplitToken(string s,char[] tokens)
@@ -108,7 +113,22 @@ namespace NicoNicoDownloader.Model
             return band_name;
         }
 
-        public static TitileConverterInfo Build(string file_path, string known_band_file_path = null)
+        public bool IsIgonoreToken(string name)
+        {
+            if (this.IgnoreTokenList == null)
+                return false;
+
+            foreach (string pattern in this.IgnoreTokenList)
+            {
+                Regex regex = new Regex(pattern);
+                var m = regex.Match(name);
+                if (m.Success)
+                    return true;
+            }
+            return false;
+        }
+
+        public static TitileConverterInfo Build(string file_path, string known_band_file_path = null,string ignore_token_file_path = null)
         {
             TitileConverterInfo info = new TitileConverterInfo();
             using (StreamReader sr = new StreamReader(file_path,Encoding.Default))
@@ -131,6 +151,18 @@ namespace NicoNicoDownloader.Model
                         known_band.Add(sr.ReadLine());
                     }
                     info.KnownBandList = known_band.ToArray();
+                }
+            }
+            if (ignore_token_file_path != null)
+            {
+                using (StreamReader sr = new StreamReader(ignore_token_file_path, Encoding.Default))
+                {
+                    List<string> ignore_tokens = new List<string>();
+                    while (!sr.EndOfStream)
+                    {
+                        ignore_tokens.Add(sr.ReadLine());
+                    }
+                    info.IgnoreTokenList = ignore_tokens.ToArray();
                 }
             }
             return info;

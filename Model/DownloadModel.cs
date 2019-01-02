@@ -61,7 +61,7 @@ namespace NicoNicoDownloader.Model
         public async static Task<BatchDownloadModel> LoginAsync(string email, string pass)
         {
             NicoNicoDownload nico = new NicoNicoDownload();
-            nico.TitleConverter = TitileConverterInfo.Build("format.txt", "bands.txt");
+            nico.TitleConverter = TitileConverterInfo.Build("format.txt", "bands.txt", "ignore.txt");
             await nico.Login(email, pass);
 
             BatchDownloadModel _model = new BatchDownloadModel(nico);

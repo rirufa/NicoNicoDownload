@@ -1,0 +1,88 @@
+宵闇市場
+Yonder Voice
+Unlucky Morpheus 
+Foreground Eclipse
+UNDEAD CORPORATION
+底無し労働組合
+A.M.A.
+Sound01
+じゃねっと亭
+niente
+SPACEELECTRO
+社團
+ブバルディアの憂い
+Further Ahead Of Warp
+IRON ATTACK
+Electron
+半裸帝国
+GASEN
+nosuke♪
+EastNewSound
+幽閉サテライト
+少女フラクタル
+SOUND HOLIC
+FELT
+Alstroemeria Records
+GET IN THE RING
+豚乙女
+Liz Triangle
+Riverside
+As／Hi Soundworks
+魂音泉
+赤道
+発熱巫女～ず
+岸田教団
+C-CLAYS
+アールグレイ
+Kraster
+White Elephant
+Frontier Create
+凋叶棕
+CyberCats
+AbsoЯute Zero
+浪速ヴァンダル
+もぱた。
+夢見月
+天秤亭
+森羅万象
+MN-logic24
+minimum electric design
+united daft attack
+緋月ノ雫
+38beets
+ニシム監督
+Spoo and Nick
+THE_OTHER_FLOWER
+幻音録
+IbEthics
+Pizuya's Cell
+モジャン棒
+no brand person
+雪風ルーフ
+歌恋人
+折草深色
+soundaiz
+ナガヅキレコード
+TAMUSIC
+Leaf
+暁Records
+ガネメ
+感情リミット
+SYNC.ART'S
+UxFxO
+囮懲封月
+カナタノート
+CielArc
+煎茶メンタル亭
+Orpheus
+アプサラス
+山紫水明
+iTi
+いえろ～ぜぶら
+あ～るの～と
+Silver Forest
+Cry Of The Soul
+Sieudiver
+(?i)Circle\s*[:：\-]\s*(.+)
+サークル\s*[:：\-]\s*(.+)
+■サークル／(.+)／Circle■
