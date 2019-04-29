@@ -1,2 +1,3 @@
 %known_album_artist%___%title%
 曲名：(?<title>.+)
+■タイトル：(?<title>.+)

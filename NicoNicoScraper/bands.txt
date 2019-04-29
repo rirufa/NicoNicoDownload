@@ -1,3 +1,4 @@
+心界巡り
 宵闇市場
 Yonder Voice
 Unlucky Morpheus 
@@ -83,6 +84,12 @@ iTi
 Silver Forest
 Cry Of The Soul
 Sieudiver
+HIDDEN TREASURE
+サークル：(.+)
 (?i)Circle\s*[:：\-]\s*(.+)
 サークル\s*[:：\-]\s*(.+)
 ■サークル／(.+)／Circle■
+アレンジ:(.+)
+Arrangement：(.+)
+【サークル】(.+)
+■サークル[:：](.+)
