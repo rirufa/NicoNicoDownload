@@ -81,13 +81,13 @@ namespace NicoNicoDownloader.Model
             return Regex.Replace(parsed, "<br>", "\n");
         }
 
-        public bool IsBandName(string name)
+        public bool IsBandName(string name,string description)
         {
-            string band_name = GetBandName(name, "");
+            string band_name = GetBandName(name, description);
             return band_name != null;
         }
 
-        private string GetBandName(string name, string description)
+        public string GetBandName(string name, string description)
         {
             if (this.KnownBandList == null)
                 return null;
